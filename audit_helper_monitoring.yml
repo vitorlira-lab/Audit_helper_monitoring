@@ -1,0 +1,23 @@
+version: 2
+
+models:
+    - name: audit_helper_monitoring
+        description: "Tabela de monitoramento histórico dos resultados dos testes de auditoria, construindo uma série temporal da qualidade dos dados."
+        columns:
+            - name: validation_monitoring_sk
+              description: "Chave substituta única para o registro de monitoramento (nome do modelo + data)."
+              data_tests:
+                    - unique
+                    - not_null
+            - name: validation_table_name
+              description: "Nome do modelo dbt de validação (ex: 'validation_clientes_migrados') que gerou o resultado de match."
+            - name: match_analysis_check_date
+              description: "Data em que a validação de qualidade foi executada, permitindo análise temporal."
+            - name: equal_percentage
+              description: "Percentual de linhas que são exatamente iguais entre as bases comparadas (legada vs. nova). O ideal é 100%."
+            - name: in_legacy_but_not_in_new_percentage
+              description: "Percentual de linhas que existem apenas na base legada, mas não na nova (potencial perda de dados)."
+            - name: in_new_but_not_in_legacy_percentage
+              description: "Percentual de linhas que existem apenas na nova base, mas não na legada (potencial duplicação ou dados inesperados)."
+            - name: match_analysis_check_ts
+              description: "Timestamp exato da execução da validação."
