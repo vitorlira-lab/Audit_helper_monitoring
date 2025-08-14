@@ -1,0 +1,23 @@
+-- models/monitoring/validation_monitoring.sql
+{{
+    config(...)
+}}
+
+{#-
+    GERAÇÃO DINÂMICA DE DEPENDÊNCIAS:
+    Este bloco é executado ANTES da análise de dependências do dbt.
+    Ele gera os comentários '-- depends_on:' como texto puro,
+    que o parser do dbt então lê para construir a DAG corretamente.
+-#}
+{% set validation_models_to_monitor = [] %}
+{%- for node in graph.nodes.values() -%}
+    {%- if 'validation_' in node.name and node.resource_type == 'model' and node.name != this.name -%}
+        -- depends_on: {{ ref(node.name) }}
+        {%- do validation_models_to_monitor.append(node.name) -%}
+    {%- endif -%}
+{%- endfor -%}
+
+with match_snapshot as (
+    ...
+)
+...
